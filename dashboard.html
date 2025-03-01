@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kreat - Dashboard</title>
+
+  <!-- Link to CSS -->
+  <link rel="stylesheet" href="css/dashboard.css" />
+
+  <!-- Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+  />
+
+  <!-- jsPDF and autoTable for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- intl-tel-input CSS for phone input with flags -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+  />
+
+  <!-- Main JS (defer) -->
+  <script defer src="js/dashboard.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- ========== Sidebar ========== -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="logo">Kreat</h2>
+      </div>
+      <ul class="nav-links">
+        <li class="active">
+          <a href="#" id="home-link">
+            <i class="fa fa-home"></i>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" id="create-link">
+            <i class="fa fa-plus-circle"></i>
+            <span>Create</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" id="records-link">
+            <i class="fa fa-database"></i>
+            <span>Records</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" id="test-link">
+            <i class="fa fa-microphone"></i>
+            <span>Test</span>
+          </a>
+        </li>
+        <!-- New "Delete" tab -->
+        <li>
+          <a href="#" id="delete-link">
+            <i class="fa fa-trash"></i>
+            <span>Delete</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" id="logout-link">
+            <i class="fa fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- ========== Main Content ========== -->
+    <div class="main-content">
+      <!-- Header / Top Bar -->
+      <header class="topbar">
+        <div class="search-bar">
+          <i class="fa fa-search"></i>
+          <input type="text" placeholder="Search..." />
+        </div>
+        <div class="topbar-icons">
+          <div class="notification">
+            <i class="fa fa-bell"></i>
+            <div id="notification-container"></div>
+          </div>
+          <div class="profile">
+            <img src="img/profile.jpg" alt="Profile" class="profile-img" />
+            <div class="profile-dropdown hidden" id="profile-dropdown">
+              <ul>
+                <li><a href="#">Logout</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- HOME Content -->
+      <main class="dashboard-main" id="home-content">
+        <h1>Welcome to Your Dashboard</h1>
+        <div class="cards">
+          <div class="card">
+            <h2>Statistics</h2>
+            <p>Overview of recent performance.</p>
+          </div>
+          <div class="card">
+            <h2>Recent Activity</h2>
+            <p>View latest updates.</p>
+          </div>
+        </div>
+
+        <!-- "Feedback Forms" button & toggling forms-list -->
+        <button id="feedback-forms-btn" class="feedback-forms-btn">
+          <i class="fa fa-folder-open"></i> Feedback Forms
+        </button>
+        <div class="forms-list hidden" id="forms-list">
+          <div class="forms-list-header">
+            <h2>Your Feedback Forms</h2>
+            <select id="forms-select"></select>
+          </div>
+          <div id="selected-form-questions" class="selected-form-questions hidden"></div>
+        </div>
+
+        <!-- Large "Share Feedback" button -->
+        <div class="share-feedback-container">
+          <button class="share-feedback-btn" id="share-feedback-btn">
+            <i class="fa fa-paper-plane"></i> Share Feedback
+          </button>
+        </div>
+      </main>
+
+      <!-- CREATE Content -->
+      <main class="dashboard-main hidden" id="create-content">
+        <h1>Create a New Feedback Form</h1>
+        <div class="create-form">
+          <label for="form-name" class="form-label">Form Name:</label>
+          <input type="text" id="form-name" class="form-input" placeholder="Enter form name" />
+          <button class="add-question-btn">
+            <i class="fa fa-plus"></i> Add Question
+          </button>
+          <div id="questions-container"></div>
+          <button class="submit-form-btn">Submit Form</button>
+        </div>
+      </main>
+
+      <!-- RECORDS Content -->
+      <main class="dashboard-main hidden" id="records-content">
+        <h1>Form Records</h1>
+        <p>Select a form to view its responses:</p><br>
+        <select id="records-forms-select"></select>
+
+        <!-- Single "Download" dropdown -->
+        <div class="download-dropdown">
+          <button class="download-btn" id="download-dropdown-btn">
+            Download <i class="fa fa-download" style="margin-left:5px;"></i> <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content hidden" id="download-dropdown-content">
+            <a href="#" id="download-excel">
+              <i class="fa fa-file-excel" style="color: #107C10;"></i> Excel
+            </a>
+            <a href="#" id="download-csv">
+              <i class="fa fa-file-csv" style="color: #f39c12;"></i> CSV
+            </a>
+            <a href="#" id="download-pdf">
+              <i class="fa fa-file-pdf" style="color: #d9534f;"></i> PDF
+            </a>
+          </div>
+        </div>
+
+        <div id="records-table-container"></div>
+      </main>
+
+      <!-- TEST Content -->
+      <main class="dashboard-main hidden" id="test-content">
+        <h1>Audio-Based Test</h1>
+        <p>Select a form to test:</p><br>
+        <select id="test-forms-select"></select>
+        <div id="chat-container" class="chat-container hidden"></div>
+      </main>
+
+      <!-- DELETE Content -->
+      <main class="dashboard-main hidden" id="delete-content">
+        <h1>Delete Form</h1>
+        <p>Select a form to delete:</p><br>
+        <div class="delete-row">
+          <select id="delete-forms-select"></select>
+          <button class="delete-btn" id="delete-form-btn">
+            <i class="fa fa-trash"></i> Delete
+          </button>
+        </div>
+        <div id="delete-table-container"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ========== FEEDBACK POPUP & OVERLAY ========== -->
+  <div id="feedback-overlay" class="feedback-overlay hidden"></div>
+  <div id="feedback-popup" class="feedback-popup hidden">
+    <div class="popup-content">
+      <h2>Send Feedback</h2>
+      <label for="popup-name">Name</label>
+      <input type="text" id="popup-name" placeholder="Enter your name" />
+      <label for="popup-email">Email</label>
+      <input type="email" id="popup-email" placeholder="Enter your email" />
+      
+      <!-- Phone input uses intl‑tel‑input for country flags -->
+      <label for="popup-phone">Phone Number</label>
+      <input type="tel" id="popup-phone" placeholder="Enter your phone number" />
+
+      <label for="popup-message">Message</label>
+      <textarea id="popup-message" rows="5">
+Hi {name}
+
+Thank you for choosing our product please click on the link below to share your feedback.
+
+Regards,
+      </textarea>
+      <div class="popup-buttons">
+        <button class="popup-send-btn" id="popup-send-btn">
+          <i class="fa fa-paper-plane"></i> Send
+        </button>
+        <button class="popup-cancel-btn" id="popup-cancel-btn">
+          <i class="fa fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FEEDBACK SENT POPUP ========== -->
+  <div id="feedback-sent-overlay" class="feedback-overlay hidden"></div>
+  <div id="feedback-sent-popup" class="feedback-popup hidden">
+    <div class="popup-content">
+      <h2>Feedback Sent!</h2>
+      <p>Thank you for your feedback.</p>
+      <button class="popup-cancel-btn" id="feedback-sent-ok-btn">
+        <i class="fa fa-check"></i> OK
+      </button>
+    </div>
+  </div>
+
+  <!-- intl-tel-input JS for phone input with flags -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+</body>
+</html>
